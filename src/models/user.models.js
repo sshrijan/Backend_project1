@@ -32,16 +32,16 @@ const userSchema = new Schema(
         coverImage: {
             type: String,
         },
+        password:{
+            type: String,
+            required: [true,"Password is required"]
+        },
         watchHistory:[
             {
                 type: Schema.Types.ObjectId,
                 ref:"Video"
             }
         ],
-        password:{
-            type: String,
-            required: [true,"Password is required"]
-        },
         refreshToken:{
             type: String
         }
@@ -52,9 +52,9 @@ const userSchema = new Schema(
     }
 )
 
-userSchema.pre("save", function (next){
+userSchema.pre("save",async function (next){
     if(this.isModified("password")){
-        this.password = bcrypt.hash(this.password, 11)
+        this.password = await bcrypt.hash(this.password, 11)
         next()
     }
     return next();
