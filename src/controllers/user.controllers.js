@@ -16,10 +16,10 @@ const registerUser = asyncHandler(async (req, res) => {
     // return response
     
 
-const {fullname, username, email, password, } = req.body
+const {fullName, username, email, password, } = req.body
    // console.log(fullname)
-
-    if (fullname === "") {
+    
+    if (fullName === "") {
     throw ApiErrors(400,"fullname is required")
     }
     if (username === "") {
@@ -31,17 +31,17 @@ const {fullname, username, email, password, } = req.body
     if (password === "") {
     throw ApiErrors(400,"password is required")
     }
-})
 
-const existedUser = User.findOne({
+
+const existedUser = await User.findOne({
     $or: [{ username },{ email }]
 })
     if (existedUser) {
     throw new ApiErrors(409,"User with Username or Email is already exists")       
     }
 
-    const avatarLocalPath = User.files?.avatar[0]?.path
-    const coverImageLocalPath = User.files?.coverImage[0]?.path
+    const avatarLocalPath = req.files?.avatar[0]?.path
+    const coverImageLocalPath = req.files?.coverImage[0]?.path
 
     if (!avatarLocalPath) {
         throw new ApiErrors(400,"Avatar is required")
@@ -55,7 +55,7 @@ const existedUser = User.findOne({
     }
 
     const user = await User.create({
-        fullname,
+        fullName,
         username: username.toLowerCase(),
         email,
         avatar: avatar.url,
@@ -63,7 +63,7 @@ const existedUser = User.findOne({
         password
     })
 
-    const createdUser = User.findById(User._id).select(
+    const createdUser = User.findById(user._id).select(
         "-password -refreshToken"
     )
 
@@ -71,8 +71,8 @@ const existedUser = User.findOne({
         throw new ApiErrors(500, "User could not be created")
     }
 
-    return res.status(200).json(
-    new ApiResponse(201,createdUser,"User has been registered successfully")
+    return res.status(201).json(
+    new ApiResponse(200,createdUser,"User has been registered successfully")
     )
-
-export {registerUser}
+})
+    export {registerUser}
