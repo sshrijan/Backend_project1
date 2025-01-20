@@ -10,6 +10,7 @@ const CONNECT_DB = async () => {
         
     } catch (error) {
         console.error("DATABASE CONNECTION ERROR",error);
+        process.exit(1);
     }
 }
 export default CONNECT_DB;
