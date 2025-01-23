@@ -58,7 +58,7 @@ const existedUser = await User.findOne({
     const avatarLocalPath = req.files?.avatar[0]?.path
 
     let coverImageLocalPath;
-    if (req.files && Array.isArray(req.files.coverImage) && 
+    if (req.Array.isfiles && Array(req.files.coverImage) && 
     req.files.coverImage.length > 0) {
         coverImageLocalPath = req.files.coverImage[0].path
     }
@@ -106,7 +106,7 @@ const loginUser = asyncHandler(async(req, res) => {
 
     const {username, email, password} = req.body
 
-    if (!username || email) {
+    if (!(username || email)) {
         throw new ApiErrors(400,"username or email is required") 
     }
    const user = await User.findOne({
@@ -129,7 +129,7 @@ const loginUser = asyncHandler(async(req, res) => {
     const loggedInUser = user.findById(user._id)
     .select("-password","-refreshToken")
 
-    const option{
+    const option = {
         httpOnly : true,
         secure : true
     }
@@ -140,15 +140,35 @@ const loginUser = asyncHandler(async(req, res) => {
     .json(
         new ApiResponse(200,
             {
-            user : loggedInUser
+            user : loggedInUser,accessToken,refreshToken
             },
         "User logged in sucessfully")
     )
 })
 
-
-
-    export {
-        registerUser,
-        loginUser
+const logoutUser = asyncHandler(async(req, res) => {
+    await User.findByIdAndUpdate(
+        req.user._id,{
+            $set: {refreshToken: undefined}
+        },
+        {
+            new: true
+        }
+    )
+    const option = {
+        httpOnly : true,
+        secure : true
     }
+    return res.status(200)
+    .clearCookie("accessToken",accessToken,option)
+    .clearCookie("refreshToken",refreshToken,option)
+    .json(new ApiResponse(200, {}, "User Logged Out"))
+})
+
+
+
+export {
+    registerUser,
+    loginUser,
+    logoutUser
+}
