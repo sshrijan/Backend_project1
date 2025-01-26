@@ -7,7 +7,8 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 
 
 
-const generateAccessAndRefereshTokens = async(userId) =>{
+const generateAccessAndRefereshTokens = async(userId) => 
+    {
     try {
         const user = await User.findById(userId)
         const accessToken = user.generateAccessToken()
@@ -112,12 +113,6 @@ const loginUser = asyncHandler(async (req, res) =>{
     if (!username && !email) {
         throw new ApiError(400, "username or email is required")
     }
-    
-    // Here is an alternative of above code based on logic discussed in video:
-    // if (!(username || email)) {
-    //     throw new ApiError(400, "username or email is required")
-        
-    // }
 
     const user = await User.findOne({
         $or: [{username}, {email}]
