@@ -331,9 +331,6 @@ const updateUserCoverImage = asyncHandler(async(res, res) => {
 })
 
 
-
-
-
 export {
     registerUser,
     loginUser,
