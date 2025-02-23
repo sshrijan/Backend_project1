@@ -15,6 +15,7 @@ CONNECT_DB()
         console.log(`Server is running at Port ${port}`);
     })
 })
+
 .catch((error) => {
     console.log(`Database connection ERROR !`,error)
 })
