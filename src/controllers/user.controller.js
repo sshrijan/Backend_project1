@@ -8,9 +8,7 @@ import jwt from "jsonwebtoken";
 
 
 
-
-const generateAccessAndRefereshTokens = async(userId) => 
-    {
+const generateAccessAndRefereshTokens = async(userId) => {
     try {
         const user = await User.findById(userId)
         const accessToken = user.generateAccessToken()
@@ -346,7 +344,7 @@ const getUserChannelProfile = asyncHandler(async(req, res) => {
             $lookup:{
                 from: "subscriptions",
                 localField: "_id",
-                foreignField: "channnel",
+                foreignField: "channel",
                 as:"subscribers"
 
             }
@@ -416,4 +414,3 @@ export {
     updateUserCoverImage,
     getUserChannelProfile
 }
-
