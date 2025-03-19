@@ -195,8 +195,12 @@ const refreshAccessToken = asyncHandler(async(req, res) => {
         throw new ApiError(401,"Invalid Refresh Token")
         }
         if (incomingRefreshToken !== user?.refreshToken) {
+            if (jwt.verify(incomingRefreshToken, process.env.REFRESH_TOKEN_SECRET)) {
+                console.log("Using existing refresh token.")
+            } else {
          throw new ApiError(402,"RefreshToken is expired or used")   
         }
+    }
     
         const options = {
             httpOnly: true,
