@@ -5,6 +5,8 @@ import { User} from "../models/user.model.js"
 import {uploadOnCloudinary} from "../utils/cloudinary.js"
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
+import mongoose from 'mongoose';
+
 
 
 
@@ -406,15 +408,17 @@ const getUserChannelProfile = asyncHandler(async(req, res) => {
 
 const getWatchHistory = asyncHandler(async (req, res) => {
     // Ensure valid user ID
-    const userId = req.user?._id ? new mongoose.Types.ObjectId(req.user._id) : null;
-    if (!userId) {
-        throw new ApiError(400, "Invalid User ID");
-    }
+    // const userId = req.user?._id? new mongoose.Types.ObjectId(req.user._id) : null;
+    // if (!userId) {
+    //     throw new ApiError(400, "Invalid User ID");
+    // }
 
     // Fetch user's watch history
     const user = await User.aggregate([
         {
-            $match: { _id: userId }
+            $match: {
+                 _id: new mongoose.Types.ObjectId(req.user._id) 
+                }
         },
         {
             $lookup: {
@@ -442,7 +446,7 @@ const getWatchHistory = asyncHandler(async (req, res) => {
                     },
                     {
                         $addFields: {
-                            owner: { $arrayElemAt: ["$owner", 0] }
+                            $first: "$owner"
                         }
                     }
                 ]
